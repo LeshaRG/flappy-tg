@@ -75,7 +75,7 @@ const CONFIG = {
   },
 
   API: {
-    BASE_URL: "https://your-server.com/api",
+    BASE_URL: "https://api.tremor-brand.ru/api",
     TIMEOUT_MS: 5000,
   },
 };
