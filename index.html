@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Flappy TG</title>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- Phaser (не module) -->
+  <script src="phaser.min.js"></script>
+
+  <style>
+    /* ── Reset & Base ────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #0d0d1a;
+      font-family: 'Courier New', Courier, monospace;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #game {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    /* ── Overlay общий ───────────────────────── */
+    #ui-menu,
+    #ui-gameover,
+    #ui-leaderboard {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+    }
+
+    /* ════════════════════════════════════
+       MENU
+    ════════════════════════════════════ */
+    .menu-card {
+      background: linear-gradient(160deg, #12122a 0%, #1e1e3f 100%);
+      border: 1px solid rgba(255,215,0,0.25);
+      border-radius: 20px;
+      padding: 36px 32px 28px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(255,215,0,0.08), 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .menu-title {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      color: #FFD700;
+      text-shadow: 0 0 20px rgba(255,215,0,0.5);
+    }
+
+    .menu-sub {
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .menu-player {
+      color: #ccc;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .menu-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 28px;
+    }
+
+    .stat { text-align: center; }
+    .stat-label { display: block; font-size: 11px; letter-spacing: 2px; color: #666; }
+    .stat-val   { display: block; font-size: 26px; font-weight: 700; color: #fff; margin-top: 2px; }
+
+    .menu-btn {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: transform 0.1s, opacity 0.1s;
+      background: #FFD700;
+      color: #0d0d1a;
+    }
+    .menu-btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255,215,0,0.3);
+      color: #FFD700;
+      font-size: 14px;
+      padding: 10px;
+    }
+    .menu-btn:active { transform: scale(0.97); opacity: 0.85; }
+
+    .menu-hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #444;
+      letter-spacing: 1px;
+    }
+
+    /* ════════════════════════════════════
+       GAME OVER
+    ════════════════════════════════════ */
+    .go-card {
+      background: linear-gradient(160deg, #12122a 0%, #1e1e3f 100%);
+      border: 1px solid rgba(255,80,80,0.2);
+      border-radius: 20px;
+      padding: 32px 28px 24px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(255,50,50,0.08), 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .go-title {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #ff4444;
+      text-shadow: 0 0 16px rgba(255,68,68,0.5);
+      margin-bottom: 12px;
+    }
+
+    .go-new-record {
+      background: linear-gradient(90deg, #FFD700, #FFA500);
+      color: #0d0d1a;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 16px;
+      animation: pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes pulse {
+      from { box-shadow: 0 0 0 rgba(255,215,0,0.4); }
+      to   { box-shadow: 0 0 16px rgba(255,215,0,0.6); }
+    }
+
+    .go-stats { margin-bottom: 20px; }
+
+    .go-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .go-label { font-size: 12px; letter-spacing: 2px; color: #666; }
+    .go-val   { font-size: 22px; font-weight: 700; color: #fff; }
+    .go-val.best { color: #FFD700; }
+    .go-val.coin { color: #FFD700; font-size: 18px; }
+
+    .go-rank {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+      min-height: 18px;
+    }
+
+    .go-btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+
+    .go-btn {
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: transform 0.1s;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #ccc;
+    }
+    .go-btn.primary {
+      background: #ff4444;
+      border-color: transparent;
+      color: #fff;
+    }
+    .go-btn:active { transform: scale(0.97); }
+
+    .go-hint { font-size: 12px; color: #333; letter-spacing: 1px; }
+
+    .go-video-wrap {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: #000;
+      aspect-ratio: 1 / 1;
+    }
+    .go-video-wrap video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* ════════════════════════════════════
+       LEADERBOARD
+    ════════════════════════════════════ */
+    .lb-card {
+      background: linear-gradient(160deg, #12122a 0%, #1e1e3f 100%);
+      border: 1px solid rgba(255,215,0,0.2);
+      border-radius: 20px;
+      padding: 28px 24px 20px;
+      width: 340px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+
+    .lb-title {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .lb-your-rank {
+      text-align: center;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 16px;
+      min-height: 18px;
+    }
+
+    .lb-table { margin-bottom: 20px; }
+
+    .lb-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 8px;
+      border-radius: 10px;
+      transition: background 0.15s;
+    }
+    .lb-row:hover { background: rgba(255,255,255,0.04); }
+    .lb-row.lb-me { background: rgba(255,215,0,0.08); border: 1px solid rgba(255,215,0,0.2); }
+
+    .lb-pos   { font-size: 18px; width: 32px; text-align: center; flex-shrink: 0; }
+    .lb-name  { flex: 1; font-size: 14px; color: #ddd; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .lb-score { font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0; }
+
+    .lb-row.lb-me .lb-name,
+    .lb-row.lb-me .lb-score { color: #FFD700; }
+
+    .lb-loading, .lb-empty { text-align: center; color: #555; padding: 30px 0; font-size: 14px; }
+
+    .lb-btns { text-align: center; }
+
+    .lb-btn {
+      padding: 12px 28px;
+      border: 1px solid rgba(255,215,0,0.3);
+      border-radius: 12px;
+      background: transparent;
+      color: #FFD700;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.15s;
+    }
+    .lb-btn:hover  { background: rgba(255,215,0,0.06); }
+    .lb-btn:active { transform: scale(0.97); }
+  </style>
+</head>
+<body>
+  <div id="game"></div>
+
+  <script type="module" src="game.js"></script>
+</body>
+</html>
