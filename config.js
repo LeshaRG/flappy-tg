@@ -15,7 +15,7 @@ const CONFIG = {
     ROTATION_UP: 0,
     ROTATION_DOWN: 0,
     ANIM_FPS: 10,
-    LERP_TURN: 0.18,
+    LERP_TURN: 0.21,
   },
 
   WALLS: {
