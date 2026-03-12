@@ -309,18 +309,29 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  _movePlayer() {
-    const { SPEED_Y, ROTATION_UP, ROTATION_DOWN } = CONFIG.PLAYER;
-    if (this._direction === "up") {
-      this._player.setVelocityY(-SPEED_Y);
-      this._player.setRotation(ROTATION_UP);
-      this._player.play("fly_up", true);
-    } else {
-      this._player.setVelocityY(SPEED_Y);
-      this._player.setRotation(ROTATION_DOWN);
-      this._player.play("fly_down", true);
-    }
+_movePlayer() {
+  const { SPEED_Y, LERP_TURN } = CONFIG.PLAYER;
+
+  // Целевая скорость в зависимости от направления
+  const targetVY = this._direction === "up" ? -SPEED_Y : SPEED_Y;
+
+  // Плавно меняем текущую скорость (это и даёт дугу!)
+  const currentVY = this._player.body.velocity.y;
+  const newVY = Phaser.Math.Linear(currentVY, targetVY, LERP_TURN);
+
+  this._player.setVelocityY(newVY);
+
+  // Красивый наклон птицы в зависимости от текущей скорости
+  const rotation = Phaser.Math.Clamp(newVY / 380, -0.45, 1.1);
+  this._player.setRotation(rotation);
+
+  // Анимация крыльев
+  if (newVY < 0) {
+    this._player.play("fly_up", true);
+  } else {
+    this._player.play("fly_down", true);
   }
+}
 
   /* ─── СЧЁТ — строго +1 целое за пару ────── */
   _checkWallPass() {
