@@ -11,7 +11,7 @@ const CONFIG = {
     START_Y: 300,
     SCALE: 0.3,
     HITBOX: { WIDTH: 100, HEIGHT: 100 },
-    SPEED_Y: 280,
+    SPEED_Y: 260,
     ROTATION_UP: 0,
     ROTATION_DOWN: 0,
     ANIM_FPS: 10,
@@ -20,7 +20,7 @@ const CONFIG = {
   WALLS: {
     SPAWN_X: 420,
     GAP: 100,          // ИСПРАВЛЕНО: было 600 — это было причиной проблем
-    SPAWN_DELAY: 1500,
+    SPAWN_DELAY: 1400,
     SPRITE: { WIDTH: 100, HEIGHT: 500 },
     HITBOX: { WIDTH: 10, HEIGHT: 500, OFFSET_X: 40, OFFSET_Y: 1 },
     PASS_X: 60,
@@ -52,7 +52,7 @@ const CONFIG = {
   },
 
   TUNNEL: {
-    EVERY_N_WALLS: 9,
+    EVERY_N_WALLS: 7,
     COUNT_MIN: 3,
     COUNT_MAX: 4,
     GAP: 100,
@@ -62,11 +62,11 @@ const CONFIG = {
   },
 
   AUDIO: {
-    MUSIC_GAME:   0.1,   // фоновая музыка в игре
-    MUSIC_MENU:   0.2,   // фоновая музыка в меню
+    MUSIC_GAME:   0.05,   // фоновая музыка в игре
+    MUSIC_MENU:   0.1,   // фоновая музыка в меню
     SFX_WALL:     0.6,   // пролёт стены
-    SFX_COIN:     0.8,   // подбор монеты
-    SFX_DEATH:    0.9,   // смерть
+    SFX_COIN:     0.6,   // подбор монеты
+    SFX_DEATH:    0.7,   // смерть
   },
 
   STORAGE: {
