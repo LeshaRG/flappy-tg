@@ -11,7 +11,7 @@ const CONFIG = {
     START_Y: 300,
     SCALE: 0.3,
     HITBOX: { WIDTH: 100, HEIGHT: 100 },
-    SPEED_Y: 220,
+    SPEED_Y: 260,
     ROTATION_UP: 0,
     ROTATION_DOWN: 0,
     ANIM_FPS: 10,
