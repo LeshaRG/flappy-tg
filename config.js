@@ -35,7 +35,7 @@ const CONFIG = {
   },
 
   DIFFICULTY: {
-    START_SPEED: 160,
+    START_SPEED: 100,
     SPEED_INCREASE: 0.008,
     MAX_SPEED: 420,
   },
