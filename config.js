@@ -3,15 +3,15 @@ const CONFIG = {
 
   GAME: {
     WIDTH: 400,
-    HEIGHT: 700,
+    HEIGHT: 680,
   },
 
   PLAYER: {
     START_X: 80,
     START_Y: 300,
     SCALE: 0.3,
-    HITBOX: { WIDTH: 100, HEIGHT: 100 },
-    SPEED_Y: 260,
+    HITBOX: { WIDTH: 90, HEIGHT: 90 },
+    SPEED_Y: 250,
     ROTATION_UP: 0,
     ROTATION_DOWN: 0,
     ANIM_FPS: 10,
@@ -20,7 +20,7 @@ const CONFIG = {
   WALLS: {
     SPAWN_X: 420,
     GAP: 100,          // ИСПРАВЛЕНО: было 600 — это было причиной проблем
-    SPAWN_DELAY: 1400,
+    SPAWN_DELAY: 1450,
     SPRITE: { WIDTH: 100, HEIGHT: 500 },
     HITBOX: { WIDTH: 10, HEIGHT: 500, OFFSET_X: 40, OFFSET_Y: 1 },
     PASS_X: 60,
@@ -35,7 +35,7 @@ const CONFIG = {
   },
 
   DIFFICULTY: {
-    START_SPEED: 100,
+    START_SPEED: 200,
     SPEED_INCREASE: 0.008,
     MAX_SPEED: 420,
   },
