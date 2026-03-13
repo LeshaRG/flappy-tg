@@ -145,7 +145,7 @@ export default class GameScene extends Phaser.Scene {
     const H      = CONFIG.GAME.HEIGHT;
 
     const count   = Phaser.Math.Between(COUNT_MIN, COUNT_MAX);
-    const margin  = 200;
+    const margin  = 300;
     const baseCY  = Phaser.Math.Between(GAP / 2 + margin, H - GAP / 2 - margin);
     const moveDur = Math.round(1000 / MOVE_SPEED);
 
