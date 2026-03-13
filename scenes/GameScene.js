@@ -99,7 +99,7 @@ export default class GameScene extends Phaser.Scene {
     const H       = CONFIG.GAME.HEIGHT;
     const WALL_H  = CONFIG.WALLS.SPRITE.HEIGHT; // 500 — высота спрайта стены
     const gap     = CONFIG.WALLS.GAP;           // зазор между краями стен
-    const margin  = 230;
+    const margin  = 200;
 
     // gapCenterY — Y середины зазора (куда летит игрок)
     const gapCenterY = Phaser.Math.Between(gap / 2 + margin, H - gap / 2 - margin);
@@ -145,7 +145,7 @@ export default class GameScene extends Phaser.Scene {
     const H      = CONFIG.GAME.HEIGHT;
 
     const count   = Phaser.Math.Between(COUNT_MIN, COUNT_MAX);
-    const margin  = 80;
+    const margin  = 200;
     const baseCY  = Phaser.Math.Between(GAP / 2 + margin, H - GAP / 2 - margin);
     const moveDur = Math.round(1000 / MOVE_SPEED);
 
